@@ -2,16 +2,14 @@
   "author": "Russell Hay <me@russellhay.com> (http://russellhay.com/)",
   "name": "adafruit-pixel",
   "description": "Interface for controlling the AdaFruit Pixels based on the WS2801",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "repository": {
     "type": "git",
     "url": "git://github.com/RussTheAerialist/node-adafruit-pixel.git"
   },
-  "main": "adafruit_pixel",
+  "main": "index",
   "dependencies": {
-      "easing": "*"
-  },
-  "engines": {
-    "node": "0.6"
+    "easing": "*",
+    "spi-device": "^2.0.6"
   }
 }

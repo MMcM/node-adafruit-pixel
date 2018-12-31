@@ -1,8 +1,8 @@
-var spi = require('spi');
-var Easing = require('easing');
+const spi = require('spi-device');
+const easing = require('easing');
 
-var STEPS = 25;
-var DURATION_SCALE = 1000/STEPS;
+const STEPS = 25;
+const DURATION_SCALE = 1000/STEPS;
 
 function Throb(setter, pixels, start_color, end_color, duration, options)
 {
@@ -12,11 +12,11 @@ function Throb(setter, pixels, start_color, end_color, duration, options)
     this.end_color = end_color;
     this.duration = duration;
     if (options !== undefined && "easing" in options) {
-        this.easing = Easing(STEPS, options.easing, {
+        this.easing = (STEPS, options.easing, {
             endToEnd:true
         });
     } else {
-        this.easing = Easing(STEPS, 'linear', {
+        this.easing = (STEPS, 'linear', {
             endToEnd:true
         });
     }
@@ -66,29 +66,46 @@ Throb.prototype.tick = function() {
     }
 }
 
+function Write(buffer) {
+    const options = {
+        mode: spi.MODE0,
+        noChipSelect: true,
+        maxSpeedHz: 1000000
+    };
+
+    const device = spi.open(0,0, options, (err) => {
+        if(err) throw err;
+
+        const message = [{
+            sendBuffer: buffer,
+            byteLength: buffer.length
+        }];
+
+        device.transfer(message, (err, response) => {
+            if(err) throw err;
+            console.log(response);
+        })
+    });
+}
+
 function Pixel(device, num_pixels) {
     this.num_pixels = num_pixels;
     this.pixel_buffer = new Buffer(num_pixels*3);
     this.off_buffer = new Buffer(num_pixels*3);
-    this.device = new spi.Spi();
-    this.device.open(device, {
-        "mode": spi.MODE[0],
-        "chipSelect": spi.CS['none'],
-        "maxSpeed": 1000000
-    });
+    this.device = device;
 
     this.pixel_buffer.fill(0);
     this.off_buffer.fill(0);
-    this.device.write(this.pixel_buffer);
+    this.Write(this.pixel_buffer);
     this.animate = null;
 };
 
 Pixel.prototype.off = function() {
-    this.device.write(this.off_buffer);
+    this.Write(this.off_buffer);
 };
 
 Pixel.prototype.sync = function() {
-    this.device.write(this.pixel_buffer);
+    this.Write(this.pixel_buffer);
 };
 
 Pixel.prototype.all = function(r,g,b) {
