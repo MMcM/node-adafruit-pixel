@@ -83,29 +83,29 @@ function Write(buffer) {
 
         device.transfer(message, (err, response) => {
             if(err) throw err;
-            console.log(response);
+            //console.log(response);
         })
     });
 }
 
 function Pixel(device, num_pixels) {
     this.num_pixels = num_pixels;
-    this.pixel_buffer = new Buffer(num_pixels*3);
-    this.off_buffer = new Buffer(num_pixels*3);
+    this.pixel_buffer = Buffer.alloc(num_pixels*3);
+    this.off_buffer = Buffer.alloc(num_pixels*3);
     this.device = device;
 
     this.pixel_buffer.fill(0);
     this.off_buffer.fill(0);
-    this.Write(this.pixel_buffer);
+    Write(this.pixel_buffer);
     this.animate = null;
 };
 
 Pixel.prototype.off = function() {
-    this.Write(this.off_buffer);
+    Write(this.off_buffer);
 };
 
 Pixel.prototype.sync = function() {
-    this.Write(this.pixel_buffer);
+    Write(this.pixel_buffer);
 };
 
 Pixel.prototype.all = function(r,g,b) {

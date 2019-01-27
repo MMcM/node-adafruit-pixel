@@ -9,7 +9,7 @@ usage
 -----
 
 ```javascript
-var Pixel = require('adafruit_pixel').Pixel;
+var Pixel = require('.').Pixel;
 
 var lights = Pixel('/dev/spidev1.1', 25);
 lights.all(0xff, 0, 0);
